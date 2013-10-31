@@ -1,0 +1,11 @@
+Changes
+lib/TestML/Tiny.pm
+lib/TestML/Tiny.pod
+Makefile.PL
+MANIFEST			This list of files
+MYMETA.json
+MYMETA.yml
+README
+t/compiler.t
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
