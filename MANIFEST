@@ -1,11 +1,14 @@
 Changes
+LICENSE
+MANIFEST
+META.json
+META.yml
+Makefile.PL
+README
 lib/TestML/Tiny.pm
 lib/TestML/Tiny.pod
-Makefile.PL
-MANIFEST			This list of files
-MYMETA.json
-MYMETA.yml
-README
+t/00-compile.t
+t/00-report-prereqs.t
+t/compiler-markers.t
 t/compiler.t
-META.yml                                 Module YAML meta-data (added by MakeMaker)
-META.json                                Module JSON meta-data (added by MakeMaker)
+xt/release/pod-syntax.t

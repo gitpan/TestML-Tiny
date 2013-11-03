@@ -1,65 +1,33 @@
-Name
-    TestML::Tiny - Single File Subset of TestML
+    ::Runtime -- Run a TestML Function
 
-Synopsis
-        use TestML::Tiny;
-        TestML::Tiny->new(
-            testml => join('', <DATA>),
-        )->run;
+    The TestML Code and Data get compiled into a Function, and the Function
+    is run by this Runtime class. Typically data is manipulated by Bridge
+    functions, and at some point Assertions are made. The assertions are the
+    things that call Test::More::is and Test::More::ok.
 
-        sub uppercase {
-            my ($self, $string) = @_;
-            return uc($string);
-        }
+    ::Compiler -- Turn a TestML document into a runnable TestML Function.
 
-        __DATA__
-        %TestML 0.1.0
+    A TestML "document" is comprised of 3 main parts: Meta, Code, Data. This
+    information often is in a single TestML (.tml) file or string, but it
+    doesn't need to be. The information can come from anywhere and be in any
+    form that is supported; it just must all be present when it is needed.
 
-        Plan = 6
+    The Meta information must be known first. It dictates where the Code and
+    Data come from, and in what format they are. Also the Code and Data
+    formats depend on the TestML API Version that is supplied. Before the
+    Code and Data can be compiled, a Version must be supplied (no default)
+    and then the compiler must support that Version. This allows TestML to
+    change over time with no confusion.
 
-        *text.uppercase == *upper
-        *upper == *text.uppercase
-        *upper.uppercase == *text.uppercase
+    The compile function returns a Function object, which in turn contains
+    an array of Statements and an array of Data Blocks. This function is the
+    run by the Runtime object.
 
-        === Test one
-        --- text: TestML is Tiny!
-        --- upper: TESTML IS TINY!
+    A Function is just an array of "executable" statements that are
+    proceseded in order. Some of the statements maybe be function
+    declarations and function calls. The Compiler produces a top level scope
+    function, with a Data set, and a Namespace for variables.
 
-        === Test two
-        --- text
-        Test, Test, Test…
-        --- upper
-        TEST, TEST, TEST…
-
-Description
-    TestML is a programming language agnostic, data driven testing language.
-    It is a descendent of Perl's Test::Base, made to work in any programming
-    language.
-
-    Some projects only need a subset of TestML, and would like it to be in a
-    single file that ships with their project. TestML::Tiny aims to be that.
-
-How TO TestML
-    TestML is really clean and simple in practice, but it involves learning
-    a few new concepts. There's TestML code and data sections, bridge
-    classes, and runner files.
-
-    THe best start is to see it in practice. eq Look through a test suite
-    like the one in here.
-
-Status
-    This 0.0.1 version is not fully functional yet. Only the data section
-    parser works.
-
-    This version is being used in YAML::Tiny development.
-
-Author
-    Ingy döt Net (ingy) <ingy@cpan.org>
-
-Copyright
-    Copyright (c) 2013 Ingy döt Net
-
-License
-    This library is free software and may be distributed under the same
-    terms as perl itself.
+    All functions are anonymous, but they can be assigned to variables, and
+    then you can call that variable name.
 

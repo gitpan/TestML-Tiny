@@ -1,7 +1,7 @@
-use 5.008003; use strict; use warnings;
+use 5.008001; use strict; use warnings;
 package TestML::Tiny;
 
-$TestML::Tiny::VERSION = 0.000001;
+our $VERSION = '0.000002'; # VERSION
 
 use Carp();
 use Test::More 0.99 ();
@@ -20,9 +20,10 @@ sub new {
     $self->{runtime} ||= TestML::Tiny::Runtime->new(
         bridge => $bridge,
     );
-    $self->{function} ||= TestML::Tiny::Compiler->new(
+    my $compiler = TestML::Tiny::Compiler->new(
         $self->{version} ? (version => $self->{version}) : (),
-    )->compile($testml);
+    );
+    $self->{function} = $compiler->compile($testml);
     return $self;
 }
 
@@ -64,7 +65,8 @@ sub _slurp {
 }
 
 #------------------------------------------------------------------------------
-=comment
+=pod comment
+
 ::Runtime -- Run a TestML Function
 
 The TestML Code and Data get compiled into a Function, and the Function is run
@@ -88,7 +90,8 @@ sub run {
 }
 
 #------------------------------------------------------------------------------
-=comment
+=pod comment
+
 ::Compiler -- Turn a TestML document into a runnable TestML Function.
 
 A TestML "document" is comprised of 3 main parts: Meta, Code, Data. This
@@ -117,14 +120,7 @@ my $LINE = qr/.*$/m;
 my $DIRECTIVE = qr/^%($ID)$SP+($LINE)/m;
 
 sub new {
-    my $self = bless {
-        code_syntax => 'tiny',
-        data_syntax => 'testml',
-        data_marker => '===',
-        block_marker => '===',
-        point_marker => '---',
-        @_[1..$#_]
-    }, $_[0];
+    my $self = bless { @_[1..$#_] }, $_[0];
 }
 
 sub runtime {
@@ -150,6 +146,13 @@ sub compile {
     return $function;
 }
 
+my %directives = (
+    code_syntax => 'tiny',
+    data_syntax => 'testml',
+    data_marker => '===',
+    block_marker => '===',
+    point_marker => '---',
+);
 sub preprocess {
     my ($self) = @_;
 
@@ -162,21 +165,42 @@ sub preprocess {
         if ($key eq "TestML") {
             $self->check_not_set_and_set($key, $value, 'version');
         }
+        elsif ($key eq "BlockMarker") {
+            $self->check_not_set_and_set(
+                'BlockMarker', $value, 'block_marker'
+            );
+            ($self->{block_marker} = $value) =~
+                s/([\*\^\$\+\?\(\)\.])/\\$1/g;
+        }
+        elsif ($key eq "PointMarker") {
+            $self->check_not_set_and_set(
+                'PointMarker', $value, 'point_marker'
+            );
+            ($self->{point_marker} = $value) =~
+                s/([\*\^\$\+\?\(\)\.])/\\$1/g;
+        }
         elsif ($key eq "CodeSyntax") {
             die "Untested";
-            $self->check_not_set('CodeSyntax', $value, 'code_syntax');
-            $self->check_syntax($value);
+            $self->check_not_set_and_set(
+                'CodeSyntax', $value, 'code_syntax'
+            );
             $self->{code_syntax} = $value;
         }
         elsif ($key eq "DataSyntax") {
             die "Untested";
-            $self->check_not_set('DataSyntax', $value, 'data_syntax');
-            $self->check_syntax($value);
+            $self->check_not_set_and_set(
+                'DataSyntax', $value, 'data_syntax'
+            );
             $self->{data_syntax} = $value;
         }
         else {
             Carp::croak "Unknown TestML directive: '%$key'";
         }
+    }
+    $self->{data_marker} = $self->{block_marker}
+        if not($self->{data_marker}) and $self->{block_marker};
+    for my $directive (keys %directives) {
+        $self->{$directive} ||= $directives{$directive};
     }
 
     ($self->{code}, $self->{data}) =
@@ -221,7 +245,9 @@ sub compile_data_testml_0_1_0 {
     push @$lines, undef; # sentinel
     while (@$lines) {
         push @$parse, shift @$lines;
-        if ( !defined($lines->[0]) or $lines->[0] =~ /^===/ ) {
+        if (!defined($lines->[0]) or
+            $lines->[0] =~ /^$self->{block_marker}/
+        ) {
             my $block = $self->_parse_testml_block($parse);
             push @$blocks, $block
                 unless exists $block->{SKIP};
@@ -239,8 +265,9 @@ sub compile_data_testml_0_1_0 {
 sub _parse_testml_block {
     my ($self, $lines) = @_;
 
-    my ($label) = $lines->[0] =~ /^===(?:\s+(.*))?$/;
-    shift @$lines until not(@$lines) or $lines->[0] =~ /^--- +\w+/;
+    my ($label) = $lines->[0] =~ /^$self->{block_marker}(?:\s+(.*))?$/;
+    shift @$lines until not(@$lines) or
+        $lines->[0] =~ /^$self->{point_marker} +\w+/;
 
     my $block = $self->_parse_testml_points($lines);
     $block->{Label} = $label || '';
@@ -255,21 +282,22 @@ sub _parse_testml_points {
 
     while (@$lines) {
         my $line = shift @$lines;
-        $line =~ /^--- +(\w+)/
+        $line =~ /^$self->{point_marker} +(\w+)/
             or die "Invalid TestML line:\n'$line'";
         my $point_name = $1;
         die "$block repeats $point_name"
             if exists $block->{$point_name};
         $block->{$point_name} = '';
-        if ($line =~ /^--- +(\w+): +(.*?) *$/) {
-            $block->{$1} .= "$2\n";
-            shift @$lines while @$lines and $lines->[0] !~ /^--- +(\w)/;
+        if ($line =~ /^$self->{point_marker} +(\w+): +(.*?) *$/) {
+            ($block->{$1} = $2) =~ s/^ *(.*?) *$/$1/;
+            shift @$lines while @$lines and
+                $lines->[0] !~ /^$self->{point_marker} +(\w)/;
         }
-        elsif ($line =~ /^--- +(\w+)$/) {
+        elsif ($line =~ /^$self->{point_marker} +(\w+)$/) {
             $point_name = $1;
             while ( @$lines ) {
                 $line = shift @$lines;
-                if ($line =~ /^--- \w+/) {
+                if ($line =~ /^$self->{point_marker} \w+/) {
                     unshift @$lines, $line;
                     last;
                 }
@@ -286,7 +314,8 @@ sub _parse_testml_points {
 }
 
 #------------------------------------------------------------------------------
-=comment
+=pod comment
+
 A Function is just an array of "executable" statements that are proceseded in
 order. Some of the statements maybe be function declarations and function
 calls. The Compiler produces a top level scope function, with a Data set, and a
