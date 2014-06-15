@@ -1,13 +1,12 @@
----
-version: 0.000002
-date:    2013-37-03 18:37:06 UTC
-changes:
-- Add Travis-CI integration
-- Support PointMarker and BlockMarker
-- Switch minimum perl to 5.8.1 to match YAML::Tiny
-- Switch to Dist::Zilla for package management
----
-version: 0.000001
-date:    Wed Oct 30 22:18:54 PDT 2013
-changes:
-- First Release
+0.0.3 Sun Jun 15 13:48:01 PDT 2014
+ - Switch to Zilla-Dist
+
+0.0.2 2013-11-03 18:37:06 UTC
+ - Add Travis-CI integration
+ - Support PointMarker and BlockMarker
+ - Switch minimum perl to 5.8.1 to match YAML::Tiny
+ - Switch to Dist::Zilla for package management
+
+0.0.1 Wed Oct 30 22:18:54 PDT 2013
+ - First Release
+
