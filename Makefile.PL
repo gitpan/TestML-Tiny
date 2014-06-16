@@ -20,9 +20,10 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "TestML::Tiny",
   "PREREQ_PM" => {
+    "Test::More" => "0.99",
     "XXX" => 0
   },
-  "VERSION" => "0.0.3",
+  "VERSION" => "0.0.4",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -30,6 +31,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Test::More" => "0.99",
   "XXX" => 0
 );
 

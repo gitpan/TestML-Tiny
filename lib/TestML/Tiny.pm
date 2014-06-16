@@ -1,12 +1,9 @@
 use 5.008001; use strict; use warnings;
 package TestML::Tiny;
-$TestML::Tiny::VERSION = '0.0.3';
-# VERSION
+our $VERSION = '0.0.4';
 
-use Carp();
-use Test::More 0.99 ();
-
-# use XXX;
+use Carp;
+use Test::More;
 
 sub import {
     strict->import;
@@ -76,8 +73,6 @@ Test::More::is and Test::More::ok.
 =cut
 
 package TestML::Tiny::Runtime;
-$TestML::Tiny::Runtime::VERSION = '0.0.3';
-# use XXX;
 
 sub new {
     my $self = $TestML::Tiny::Runtime::Singleton =
@@ -111,8 +106,6 @@ array of Statements and an array of Data Blocks. This function is the run by
 the Runtime object.
 =cut
 package TestML::Tiny::Compiler;
-$TestML::Tiny::Compiler::VERSION = '0.0.3';
-# use XXX;
 
 my $ID = qr/\w+/;
 my $SP = qr/[\ \t]/;
@@ -325,7 +318,7 @@ All functions are anonymous, but they can be assigned to variables, and then
 you can call that variable name.
 =cut
 package TestML::Tiny::Function;
-$TestML::Tiny::Function::VERSION = '0.0.3';
+
 sub new {
     my $self = bless {
         statements => [],
@@ -336,14 +329,13 @@ sub new {
 
 #------------------------------------------------------------------------------
 package TestML::Tiny::Bridge;
-$TestML::Tiny::Bridge::VERSION = '0.0.3';
+
 sub new {
     my $self = bless { @_[1..$#_] }, $_[0];
 }
 
 #------------------------------------------------------------------------------
 package TestML::Tiny::Library::Standard;
-$TestML::Tiny::Library::Standard::VERSION = '0.0.3';
 
 sub new {
     my $self = bless { @_[1..$#_] }, $_[0];
