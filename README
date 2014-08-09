@@ -39,7 +39,7 @@ DESCRIPTION
     Some projects only need a subset of TestML, and would like it to be in a
     single file that ships with their project. TestML::Tiny aims to be that.
 
-How TO TestML
+HOW TO TESTML
     TestML is really clean and simple in practice, but it involves learning
     a few new concepts. There's TestML code and data sections, bridge
     classes, and runner files.
@@ -56,7 +56,7 @@ STATUS
 AUTHOR
     Ingy döt Net (ingy) <ingy@cpan.org>
 
-Copyright and License
+COPYRIGHT AND LICENSE
     Copyright 2013-2014 Ingy döt Net
 
     This library is free software and may be distributed under the same
