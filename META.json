@@ -1,7 +1,7 @@
 {
    "abstract" : "Single File Subset of TestML",
    "author" : [
-      "Ingy döt Net <ingy@ingy.net>"
+      "Ingy döt Net <ingy@cpan.org>"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Dist::Zilla version 5.019, CPAN::Meta::Converter version 2.132830",
@@ -52,6 +52,6 @@
          "web" : "https://github.com/ingydotnet/testml-tiny-pm"
       }
    },
-   "version" : "0.0.9"
+   "version" : "0.0.10"
 }
 

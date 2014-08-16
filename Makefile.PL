@@ -11,7 +11,7 @@ use ExtUtils::MakeMaker 6.30;
 
 my %WriteMakefileArgs = (
   "ABSTRACT" => "Single File Subset of TestML",
-  "AUTHOR" => "Ingy d\x{f6}t Net <ingy\@ingy.net>",
+  "AUTHOR" => "Ingy d\x{f6}t Net <ingy\@cpan.org>",
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
   },
@@ -23,7 +23,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.99",
     "XXX" => 0
   },
-  "VERSION" => "0.0.9",
+  "VERSION" => "0.0.10",
   "test" => {
     "TESTS" => "t/*.t"
   }

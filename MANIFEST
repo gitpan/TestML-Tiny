@@ -9,6 +9,7 @@ Makefile.PL
 README
 lib/TestML/Tiny.pm
 lib/TestML/Tiny.pod
+t/000-compile-modules.t
 t/compile-markers.t
 t/compiler.t
 t/release-pod-syntax.t

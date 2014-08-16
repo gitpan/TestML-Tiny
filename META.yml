@@ -1,7 +1,7 @@
 ---
 abstract: 'Single File Subset of TestML'
 author:
-  - 'Ingy döt Net <ingy@ingy.net>'
+  - 'Ingy döt Net <ingy@cpan.org>'
 build_requires: {}
 configure_requires:
   ExtUtils::MakeMaker: '6.30'
@@ -26,4 +26,4 @@ resources:
   bugtracker: https://github.com/ingydotnet/testml-tiny-pm/issues
   homepage: https://github.com/ingydotnet/testml-tiny-pm
   repository: https://github.com/ingydotnet/testml-tiny-pm.git
-version: 0.0.9
+version: 0.0.10
